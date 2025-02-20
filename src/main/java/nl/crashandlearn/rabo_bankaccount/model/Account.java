@@ -7,7 +7,6 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.PositiveOrZero;
 import lombok.*;
 import nl.crashandlearn.rabo_bankaccount.constraint.IbanFormat;
-import org.apache.commons.lang3.builder.HashCodeExclude;
 
 @Entity
 @Table(name="ACCOUNT")
@@ -22,10 +21,10 @@ public class Account {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name="customer_id", updatable = false)
+    @JoinColumn(name="user_id", updatable = false)
     @EqualsAndHashCode.Exclude
     @JsonIgnore
-    private Customer customer;
+    private User user;
 
     @IbanFormat
     @Schema(example = IbanFormat.IBAN_EXAMPLE)

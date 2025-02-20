@@ -1,14 +1,15 @@
 package nl.crashandlearn.rabo_bankaccount.security;
 
-import io.swagger.v3.oas.models.Components;
-import io.swagger.v3.oas.models.OpenAPI;
-import io.swagger.v3.oas.models.security.SecurityRequirement;
-import io.swagger.v3.oas.models.security.SecurityScheme;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.access.expression.method.DefaultMethodSecurityExpressionHandler;
+import org.springframework.security.access.expression.method.MethodSecurityExpressionHandler;
+import org.springframework.security.access.hierarchicalroles.RoleHierarchy;
+import org.springframework.security.access.hierarchicalroles.RoleHierarchyImpl;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -19,10 +20,10 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-import java.util.List;
 
 @Configuration
 @EnableWebSecurity
+@EnableMethodSecurity(securedEnabled = true, prePostEnabled = true, jsr250Enabled = true)
 public class SecurityConfiguration {
 
     private JwtAuthEntryPoint authEntryPoint;
@@ -34,7 +35,8 @@ public class SecurityConfiguration {
             "/h2-console/**",
             "/swagger-ui/**",
             "/v3/api-docs*/**",
-            "/auth/**" };
+            "/auth/**"
+    };
 
 
     public SecurityConfiguration(JwtAuthEntryPoint authEntryPoint,
@@ -45,6 +47,21 @@ public class SecurityConfiguration {
         this.jwtUtils = jwtUtils;
     }
 
+    @Bean
+    static RoleHierarchy roleHierarchy() {
+        var roleHierarchy = new RoleHierarchyImpl();
+        roleHierarchy.setHierarchy("""
+                ROLE_ADMIN > ROLE_USER
+                """);
+        return roleHierarchy;
+    }
+
+    @Bean
+    MethodSecurityExpressionHandler MethodSecurityExpressionHandler(RoleHierarchy roleHierarchy) {
+        DefaultMethodSecurityExpressionHandler meh = new DefaultMethodSecurityExpressionHandler();
+        meh.setRoleHierarchy(roleHierarchy);
+        return meh;
+    }
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -60,19 +77,6 @@ public class SecurityConfiguration {
         return http.build();
     }
 
-
-    @Bean
-    public OpenAPI customOpenAPI() {
-        return new OpenAPI()
-                .components(new Components()
-                        .addSecuritySchemes("BearerAuthentication",
-                                new SecurityScheme()
-                                        .type(SecurityScheme.Type.HTTP)
-                                        .scheme("bearer")
-                                        .bearerFormat("JWT"))
-                )
-                .security(List.of(new SecurityRequirement().addList("BearerAuthentication")));
-    }
 
     @Bean
     public JwtAuthenticationFilter authenticationJwtTokenFilter() {

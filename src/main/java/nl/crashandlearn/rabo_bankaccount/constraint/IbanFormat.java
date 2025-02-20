@@ -14,7 +14,7 @@ import java.lang.annotation.Target;
 @Retention(RUNTIME)
 @Documented
 public @interface IbanFormat {
-    final String IBAN_EXAMPLE = "NL91 ABNA 0417 1643 00";
+    String IBAN_EXAMPLE = "NL91 ABNA 0417 1643 00";
 
     String message() default
             "IBAN number must be formatted correctly. Example: " + IBAN_EXAMPLE;

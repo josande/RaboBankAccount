@@ -8,11 +8,7 @@ import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 
 
 @SpringBootApplication
-@OpenAPIDefinition(info = @Info(
-        title = "Simple Bank account API",
-        version = "1.0",
-        description = "Handles users, customers and accounts"),
-        security = {@SecurityRequirement(name = "BearerAuthentication") })
+
 public class RaboBankAccountApplication {
     public static void main(String[] args) {
         SpringApplication.run(RaboBankAccountApplication.class, args);
