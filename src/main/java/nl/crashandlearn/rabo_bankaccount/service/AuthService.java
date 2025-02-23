@@ -3,10 +3,8 @@ package nl.crashandlearn.rabo_bankaccount.service;
 import nl.crashandlearn.rabo_bankaccount.exception.UsernameAlreadyExistsException;
 import nl.crashandlearn.rabo_bankaccount.model.User;
 import nl.crashandlearn.rabo_bankaccount.repository.UserRepository;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 
 @Service
 public class AuthService {

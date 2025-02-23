@@ -8,22 +8,23 @@ import jakarta.validation.constraints.PositiveOrZero;
 import lombok.*;
 import nl.crashandlearn.rabo_bankaccount.constraint.IbanFormat;
 
+import java.io.Serializable;
+
 @Entity
 @Table(name="ACCOUNT")
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
-public class Account {
+public class Account implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Schema(example = "1234")
+    @Schema(example = "1")
     private Long id;
 
     @ManyToOne
     @JoinColumn(name="user_id", updatable = false)
     @EqualsAndHashCode.Exclude
-    @JsonIgnore
     private User user;
 
     @IbanFormat
@@ -34,5 +35,9 @@ public class Account {
     @Schema(description = "Current account balance in €, must be at least 0. Default value is 0",
             example = "123.01")
     private double balance;
+
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "card_id", referencedColumnName = "id")
+    private Card card;
 
 }

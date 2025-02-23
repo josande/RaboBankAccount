@@ -1,7 +1,9 @@
 package nl.crashandlearn.rabo_bankaccount.service;
 
+import nl.crashandlearn.rabo_bankaccount.annotation.Audited;
 import nl.crashandlearn.rabo_bankaccount.exception.AccountNotFoundException;
 import nl.crashandlearn.rabo_bankaccount.exception.InsufficientFundsException;
+import nl.crashandlearn.rabo_bankaccount.exception.SameAccountException;
 import nl.crashandlearn.rabo_bankaccount.model.Account;
 import nl.crashandlearn.rabo_bankaccount.model.User;
 import nl.crashandlearn.rabo_bankaccount.repository.AccountRepository;
@@ -59,7 +61,8 @@ public class AccountService extends BaseService {
     }
 
 
-    public void withdraw(Long accountIdFrom, double amountToWithdraw) {
+    @Audited
+    public void accountWithdrawal(double amountToWithdraw, Long accountIdFrom) {
         var accountFrom = repository.findById(accountIdFrom).orElseThrow(() -> new AccountNotFoundException(accountIdFrom));
 
         if(accountFrom.getBalance()<amountToWithdraw)
@@ -74,9 +77,13 @@ public class AccountService extends BaseService {
 
 
     @Transactional
-    public void transfer(Long accountIdFrom, Long accountIdTo, double amountToTransfer) {
+    @Audited
+    public void accountTransfer(double amountToTransfer, Long accountIdFrom, Long accountIdTo) {
         var accountFrom = repository.findById(accountIdFrom).orElseThrow(() -> new AccountNotFoundException(accountIdFrom));
         var accountTo = repository.findById(accountIdTo).orElseThrow(() -> new AccountNotFoundException(accountIdTo));
+
+        if(accountFrom.equals(accountTo))
+            throw new SameAccountException(accountIdFrom);
 
         if(accountFrom.getBalance()<amountToTransfer)
             throw new InsufficientFundsException(accountIdFrom, accountFrom.getBalance(), amountToTransfer);

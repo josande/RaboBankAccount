@@ -3,6 +3,7 @@ package nl.crashandlearn.rabo_bankaccount.exception;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
@@ -38,12 +39,24 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(errorObject, HttpStatus.FORBIDDEN);
     }
 
+   @ExceptionHandler(SameAccountException.class)
+    public ResponseEntity<ErrorDto> handleSameAccountException(SameAccountException ex, WebRequest request) {
+        ErrorDto errorObject = new ErrorDto(HttpStatus.BAD_REQUEST, ex.getMessage(), new Date());
+        return new ResponseEntity<>(errorObject, HttpStatus.BAD_REQUEST);
+    }
+
 
 
 
 
     @ExceptionHandler(AccessDeniedException.class)
     public ResponseEntity<ErrorDto> handleAccessDeniedException(AccessDeniedException ex, WebRequest request) {
+        ErrorDto errorObject = new ErrorDto(HttpStatus.UNAUTHORIZED, ex.getMessage(), new Date());
+        return new ResponseEntity<>(errorObject, HttpStatus.UNAUTHORIZED);
+    }
+
+    @ExceptionHandler(UsernameNotFoundException.class)
+    public ResponseEntity<ErrorDto> handleUsernameNotFoundException(UsernameNotFoundException ex, WebRequest request) {
         ErrorDto errorObject = new ErrorDto(HttpStatus.UNAUTHORIZED, ex.getMessage(), new Date());
         return new ResponseEntity<>(errorObject, HttpStatus.UNAUTHORIZED);
     }

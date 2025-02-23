@@ -11,26 +11,26 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import java.util.HashMap;
 import java.util.Map;
 
-@RestControllerAdvice
+//@RestControllerAdvice
 public class AccountControllerAdvice {
 
-    @ResponseBody
-    @ExceptionHandler(AccountNotFoundException.class)
-    @ResponseStatus(HttpStatus.NOT_FOUND)
-    String accountNotFoundHandler(AccountNotFoundException ex) {
-        return ex.getMessage();
-    }
-
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    @ExceptionHandler(MethodArgumentNotValidException.class)
-    public Map<String, String> handleValidationExceptions(
-            MethodArgumentNotValidException ex) {
-        Map<String, String> errors = new HashMap<>();
-        ex.getBindingResult().getAllErrors().forEach((error) -> {
-            String fieldName = ((FieldError) error).getField();
-            String errorMessage = error.getDefaultMessage();
-            errors.put(fieldName, errorMessage);
-        });
-        return errors;
-    }
+  //  @ResponseBody
+  //  @ExceptionHandler(AccountNotFoundException.class)
+  //  @ResponseStatus(HttpStatus.NOT_FOUND)
+  //  String accountNotFoundHandler(AccountNotFoundException ex) {
+  //      return ex.getMessage();
+  //  }
+//
+  //  @ResponseStatus(HttpStatus.BAD_REQUEST)
+  //  @ExceptionHandler(MethodArgumentNotValidException.class)
+  //  public Map<String, String> handleValidationExceptions(
+  //          MethodArgumentNotValidException ex) {
+  //      Map<String, String> errors = new HashMap<>();
+  //      ex.getBindingResult().getAllErrors().forEach((error) -> {
+  //          String fieldName = ((FieldError) error).getField();
+  //          String errorMessage = error.getDefaultMessage();
+  //          errors.put(fieldName, errorMessage);
+  //      });
+  //      return errors;
+  //  }
 }

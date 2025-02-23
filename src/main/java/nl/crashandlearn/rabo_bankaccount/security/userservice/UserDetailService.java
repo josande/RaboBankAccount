@@ -21,7 +21,7 @@ public class UserDetailService implements UserDetailsService  {
     @Transactional
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         User user = userRepository.findByUsername(username)
-                .orElseThrow(() -> new UsernameNotFoundException("No user found for user: " + username));
+                .orElseThrow(() -> new UsernameNotFoundException("No user found for username: " + username));
 
         return UserDetail.build(user);
     }

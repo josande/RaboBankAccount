@@ -10,6 +10,6 @@ import java.util.List;
 @Repository
 public interface AccountRepository extends JpaRepository<Account, Long> {
 
-    @Query(value = "SELECT * FROM ACCOUNT WHERE user_id = ?1", nativeQuery = true)
+    @Query("SELECT a FROM Account a JOIN FETCH a.user WHERE a.user.id = ?1")
     List<Account> findByUser(Long userId);
 }

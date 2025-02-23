@@ -171,7 +171,7 @@ public class AccountController {
     })
     @PutMapping("/withdraw")
     void withdraw(@RequestBody WithdrawDto dto) {
-        accountService.withdraw(dto.accountIdFrom, dto.amount);
+        accountService.accountWithdrawal(dto.amount, dto.accountIdFrom);
     }
 
     record TransferDto(Long accountIdFrom, Long accountIdTo,  @Positive double amount) {}
@@ -191,6 +191,6 @@ public class AccountController {
     })
     @PutMapping("/transfer")
     void transfer(@RequestBody TransferDto dto) {
-        accountService.transfer(dto.accountIdFrom, dto.accountIdTo, dto.amount);
+        accountService.accountTransfer(dto.amount, dto.accountIdFrom, dto.accountIdTo);
     }
 }
