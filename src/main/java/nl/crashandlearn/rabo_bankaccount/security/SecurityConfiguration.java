@@ -23,12 +23,12 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 @Configuration
 @EnableWebSecurity
-@EnableMethodSecurity(securedEnabled = true, prePostEnabled = true, jsr250Enabled = true)
+@EnableMethodSecurity(securedEnabled = true, jsr250Enabled = true)
 public class SecurityConfiguration {
 
-    private JwtAuthEntryPoint authEntryPoint;
-    private UserDetailsService userDetailsService;
-    private JwtUtils jwtUtils;
+    private final JwtAuthEntryPoint authEntryPoint;
+    private final UserDetailsService userDetailsService;
+    private final JwtUtils jwtUtils;
 
 
     private static final String[] WHITE_LIST_URL = {

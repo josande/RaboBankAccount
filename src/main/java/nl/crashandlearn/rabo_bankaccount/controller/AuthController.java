@@ -14,7 +14,6 @@ import jakarta.validation.constraints.Size;
 import nl.crashandlearn.rabo_bankaccount.exception.ErrorDto;
 import nl.crashandlearn.rabo_bankaccount.model.Role;
 import nl.crashandlearn.rabo_bankaccount.model.User;
-import nl.crashandlearn.rabo_bankaccount.repository.UserRepository;
 import nl.crashandlearn.rabo_bankaccount.security.JwtUtils;
 import nl.crashandlearn.rabo_bankaccount.service.AuthService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,17 +26,15 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
 @RestController
 @RequestMapping("/auth")
 @SecurityRequirements()
 public class AuthController {
 
-    private AuthService authService;
-    private AuthenticationManager authenticationManager;
-    private PasswordEncoder passwordEncoder;
-    private JwtUtils jwtUtils;
+    private final AuthService authService;
+    private final AuthenticationManager authenticationManager;
+    private final PasswordEncoder passwordEncoder;
+    private final JwtUtils jwtUtils;
 
 
     @Autowired

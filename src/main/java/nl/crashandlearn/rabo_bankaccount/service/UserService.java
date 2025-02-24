@@ -16,22 +16,13 @@ public class UserService extends BaseService {
         this.repository = repository;
     }
 
-    public Optional<User> findById(Long id) {
-        return repository.findById(id);
-    }
-
-    public List<User> getAllUsers() {
-        return repository.findAll();
-    }
-
     public User getCurrentUser() {
         return repository.findById(getUserId()).orElseThrow(() -> new UserNotFoundException(getUserId()));
     }
 
     public double getBalance() {
-        Double balance = repository.getBalance(getUserId());;
+        Double balance = repository.getBalance(getUserId());
         return balance == null ? 0 : balance;
-
     }
 
     public Optional<User> findByIdWithAccounts(Long id) {

@@ -10,7 +10,6 @@ import nl.crashandlearn.rabo_bankaccount.exception.ErrorDto;
 import nl.crashandlearn.rabo_bankaccount.model.AuditPost;
 import nl.crashandlearn.rabo_bankaccount.model.User;
 import nl.crashandlearn.rabo_bankaccount.service.AuditService;
-import nl.crashandlearn.rabo_bankaccount.service.UserService;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;

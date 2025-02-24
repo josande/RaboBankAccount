@@ -1,9 +1,5 @@
 package nl.crashandlearn.rabo_bankaccount.aspect;
 
-import nl.crashandlearn.rabo_bankaccount.model.AuditPost;
-import nl.crashandlearn.rabo_bankaccount.model.User;
-import nl.crashandlearn.rabo_bankaccount.repository.AuditRepository;
-import nl.crashandlearn.rabo_bankaccount.security.userservice.UserDetail;
 import nl.crashandlearn.rabo_bankaccount.service.AuditService;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.*;
@@ -35,7 +31,7 @@ public class AuditedAspect {
         MethodSignature signature = (MethodSignature) joinPoint.getSignature();
         StringBuilder arguments = new StringBuilder();
         for(int i=0; i<joinPoint.getArgs().length; i++) {
-            if (arguments.length() != 0)
+            if (!arguments.isEmpty())
                 arguments.append(", ");
             arguments.append(signature.getParameterNames()[i]).append("=").append(joinPoint.getArgs()[i].toString());
         }
