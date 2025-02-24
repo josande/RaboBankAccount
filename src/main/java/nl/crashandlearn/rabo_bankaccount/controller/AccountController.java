@@ -69,7 +69,6 @@ public class AccountController {
                     content = { @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDto.class)) }) })
     @GetMapping("/{id}")
     @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
-
     EntityModel<Account> getAccountById(@PathVariable long id) {
         Account account = accountService.findById(id).orElseThrow(() -> new AccountNotFoundException(id));
         return accountAssembler.toModel(account);

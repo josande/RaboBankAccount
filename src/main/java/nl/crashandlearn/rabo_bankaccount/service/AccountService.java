@@ -15,15 +15,15 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-public class AccountService extends BaseService {
+public class AccountService{
+
     private final AccountRepository repository;
+    private final AuthenticationHelperService authHelper;
 
-
-    public AccountService(AccountRepository repository) {
+    public AccountService(AccountRepository repository, AuthenticationHelperService authHelper) {
         this.repository = repository;
+        this.authHelper = authHelper;
     }
-
-
 
     public Optional<Account> findById(long id) {
         return repository.findById(id);
@@ -32,7 +32,7 @@ public class AccountService extends BaseService {
     public Account createAccount(Double balance) {
 
         var account = Account.builder()
-                .user(User.builder().id(getUserId()).build())
+                .user(User.builder().id(authHelper.getUserId()).build())
                 .balance(balance)
                 .build();
 
@@ -43,13 +43,13 @@ public class AccountService extends BaseService {
         var account = repository.findById(id).orElse(null);
         if(account == null) return;
 
-        if (isOwner(account) || isAdmin()) repository.deleteById(id);
+        if (authHelper.isOwner(account) || authHelper.isAdmin()) repository.deleteById(id);
         else throw new AccessDeniedException("User lacks permission to delete account: "+id);
     }
 
 
     public List<Account> getAllAccountsForUser() {
-        return repository.findByUserId(getUserId());
+        return repository.findByUserId(authHelper.getUserId());
     }
 
 
@@ -65,8 +65,8 @@ public class AccountService extends BaseService {
         if(accountFrom.getBalance()<amountToWithdraw)
             throw new InsufficientFundsException(accountIdFrom, accountFrom.getBalance(), amountToWithdraw);
 
-        if (!isOwner(accountFrom) && !isAdmin())
-            throw new AccessDeniedException("User lacks permission to withdraw from account: "+accountFrom);
+        if (!authHelper.isOwner(accountFrom) && !authHelper.isAdmin())
+            throw new AccessDeniedException("User lacks permission to withdraw from account: "+accountFrom.getId());
 
         accountFrom.setBalance(accountFrom.getBalance() - amountToWithdraw);
         repository.save(accountFrom);
@@ -85,8 +85,8 @@ public class AccountService extends BaseService {
         if(accountFrom.getBalance()<amountToTransfer)
             throw new InsufficientFundsException(accountIdFrom, accountFrom.getBalance(), amountToTransfer);
 
-        if (!isOwner(accountFrom) && !isAdmin())
-            throw new AccessDeniedException("User lacks permission to transfer from account: "+accountFrom);
+        if (!authHelper.isOwner(accountFrom) && !authHelper.isAdmin())
+            throw new AccessDeniedException("User lacks permission to transfer from account: "+accountFrom.getId());
 
         accountFrom.setBalance(accountFrom.getBalance() - amountToTransfer);
         accountTo.setBalance(accountTo.getBalance() + amountToTransfer);

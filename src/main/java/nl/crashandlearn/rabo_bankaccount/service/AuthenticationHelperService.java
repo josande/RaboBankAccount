@@ -7,8 +7,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 @Service
-public class BaseService {
-
+public class AuthenticationHelperService {
     boolean isOwner(Account account) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         return (auth != null &&
