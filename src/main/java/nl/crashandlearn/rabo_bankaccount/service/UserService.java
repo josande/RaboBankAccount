@@ -33,4 +33,13 @@ public class UserService extends BaseService {
         return balance == null ? 0 : balance;
 
     }
+
+    public Optional<User> findByIdWithAccounts(Long id) {
+        return repository.findById(id);
+    }
+
+    public List<User> getAllUsersWithAccounts() {
+        return repository.findAll();
+
+    }
 }

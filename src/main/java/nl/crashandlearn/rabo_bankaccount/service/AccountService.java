@@ -11,6 +11,7 @@ import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 
@@ -35,8 +36,8 @@ public class AccountService extends BaseService {
                 .user(User.builder().id(getUserId()).build())
                 .balance(balance)
                 .build();
-        account = repository.save(account);
-        return repository.findById(account.getId()).get();
+
+        return repository.save(account);
     }
 
     public void delete(Long id) {
@@ -49,20 +50,12 @@ public class AccountService extends BaseService {
 
 
     public List<Account> getAllAccountsForUser() {
-        return repository.findByUser(getUserId());
+        return repository.findByUserId(getUserId());
     }
 
 
     public List<Account> getAllAccounts() {
         return repository.findAll();
-    }
-
-    public Account update(Account newValue) {
-        var account = repository.findById(newValue.getId()).orElseThrow(() -> new AccountNotFoundException(newValue.getId()));
-
-        if (isOwner(account) || isAdmin()) return repository.save(newValue);
-        throw new AccessDeniedException("User lacks permission to update account: "+newValue.getId());
-
     }
 
 

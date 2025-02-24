@@ -82,7 +82,7 @@ public class UserController {
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @GetMapping("/{id}")
     public ResponseEntity<User> getUserById(@PathVariable Long id) {
-        User user = userService.findById(id)
+        User user = userService.findByIdWithAccounts(id)
                 .orElseThrow(() -> new UserNotFoundException(id));
         return ResponseEntity.ok(user);
     }
@@ -101,7 +101,7 @@ public class UserController {
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @GetMapping("/all")
     public CollectionModel<User> getAllUsers() {
-        List<User> users = userService.getAllUsers();
+        List<User> users = userService.getAllUsersWithAccounts();
         return CollectionModel.of(users);
     }
 }

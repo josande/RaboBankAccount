@@ -1,5 +1,7 @@
 package nl.crashandlearn.rabo_bankaccount.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 import jakarta.persistence.*;
@@ -7,6 +9,8 @@ import jakarta.validation.constraints.PositiveOrZero;
 import lombok.*;
 
 import java.io.Serializable;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Table(name="ACCOUNT")
@@ -21,6 +25,7 @@ public class Account implements Serializable {
     private Long id;
 
     @ManyToOne
+    @JsonIgnore
     private User user;
 
     @PositiveOrZero
@@ -28,8 +33,15 @@ public class Account implements Serializable {
             example = "123.01")
     private double balance;
 
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "card_id", referencedColumnName = "id")
-    private Card card;
+    @OneToMany(
+            mappedBy = "account",
+            cascade = CascadeType.ALL,
+            fetch = FetchType.EAGER,
+            orphanRemoval = true)
+    private Set<Card> cards = new HashSet<>();
 
+    @Override
+    public int hashCode() {
+        return 711 + id.intValue() * (int) balance;
+    }
 }

@@ -11,9 +11,9 @@ import java.util.Optional;
 @Repository
 public interface AccountRepository extends JpaRepository<Account, Long> {
 
-    @Query("SELECT a FROM Account a JOIN FETCH a.user WHERE a.id = ?1")
+    //@Query("SELECT a FROM Account a JOIN FETCH a.user LEFT JOIN FETCH a.cards WHERE a.id = ?1")
     Optional<Account> findById(Long userId);
 
-    @Query("SELECT a FROM Account a JOIN FETCH a.user WHERE a.user.id = ?1")
-    List<Account> findByUser(Long userId);
+    @Query("SELECT a FROM Account a where a.user.id = ?1")
+    List<Account> findByUserId(Long userId);
 }

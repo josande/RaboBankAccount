@@ -51,6 +51,12 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(errorObject, HttpStatus.NOT_FOUND);
     }
 
+    @ExceptionHandler(CardAlreadyPresentException.class)
+    public ResponseEntity<ErrorDto> handleCardNotFoundException(CardAlreadyPresentException ex, WebRequest request) {
+        ErrorDto errorObject = new ErrorDto(HttpStatus.BAD_REQUEST, ex.getMessage(), new Date());
+        return new ResponseEntity<>(errorObject, HttpStatus.BAD_REQUEST);
+    }
+
 
 
     @ExceptionHandler(AccessDeniedException.class)

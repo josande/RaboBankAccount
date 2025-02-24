@@ -1,8 +1,8 @@
 package nl.crashandlearn.rabo_bankaccount.model;
 
 public enum CardType {
-    DEBIT_CART(1.00),
-    CREDIT_CART(1.01);
+    DEBIT_CARD(1.00),
+    CREDIT_CARD(1.01);
 
     public final double fee;
     CardType(double fee) {
