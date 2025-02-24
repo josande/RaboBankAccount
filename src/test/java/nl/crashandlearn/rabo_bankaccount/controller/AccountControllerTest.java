@@ -8,6 +8,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -28,6 +29,8 @@ public class AccountControllerTest {
 
     @Mock
     private AccountService service;
+    @Spy
+    private AccountAssembler assembler;
 
     @InjectMocks
     private AccountController controller;
@@ -151,7 +154,7 @@ public class AccountControllerTest {
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content("""
                                         {
-                                          "cardIdFrom": 1,
+                                          "accountIdFrom": 1,
                                           "amount": 10
                                         }""")
                                 .accept(MediaType.APPLICATION_JSON))
@@ -169,7 +172,7 @@ public class AccountControllerTest {
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content("""
                                         {
-                                          "cardIdFrom": 1,
+                                          "accountIdFrom": 1,
                                           "accountIdTo": 2,
                                           "amount": 10
                                         }""")

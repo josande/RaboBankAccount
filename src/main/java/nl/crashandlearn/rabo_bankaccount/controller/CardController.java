@@ -62,7 +62,7 @@ public class CardController implements Serializable  {
     }
 
 
-    record WithdrawDto(Long cardIdFrom, @Positive double amount) {}
+    private record CardWithdrawDto(Long cardIdFrom, @Positive double amount) {}
     @Operation(summary = "Withdraw money via a card",
             description = "Account must hold sufficient funds.")
     @ApiResponses(value = {
@@ -77,11 +77,11 @@ public class CardController implements Serializable  {
                     content = { @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDto.class)) })
     })
     @PutMapping("/withdraw")
-    void withdraw(@RequestBody WithdrawDto dto) {
+    void withdraw(@RequestBody CardWithdrawDto dto) {
         cardService.cardWithdrawal(dto.amount, dto.cardIdFrom);
     }
 
-    record TransferDto(Long cardIdFrom, Long accountIdTo, @Positive double amount) {}
+    private record CardTransferDto(Long cardIdFrom, Long accountIdTo, @Positive double amount) {}
     @Operation(summary = "Transfer money between two accounts",
             description = "Both accounts must be in this bank.")
     @ApiResponses(value = {
@@ -96,7 +96,7 @@ public class CardController implements Serializable  {
                     content = { @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDto.class)) })
     })
     @PutMapping("/transfer")
-    void transfer(@RequestBody TransferDto dto) {
+    void transfer(@RequestBody CardTransferDto dto) {
         cardService.cardTransfer(dto.amount, dto.cardIdFrom, dto.accountIdTo);
     }
 

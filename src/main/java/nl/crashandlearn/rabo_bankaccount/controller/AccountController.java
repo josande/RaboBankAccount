@@ -127,7 +127,7 @@ public class AccountController {
         accountService.delete(id);
     }
 
-    record WithdrawDto(Long accountIdFrom, @Positive double amount) {}
+    private record AccountWithdrawDto(Long accountIdFrom, @Positive double amount) {}
     @Operation(summary = "Withdraw money from an account",
             description = "Account must hold sufficient funds.")
     @ApiResponses(value = {
@@ -142,11 +142,11 @@ public class AccountController {
                     content = { @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDto.class)) })
     })
     @PutMapping("/withdraw")
-    void withdraw(@RequestBody WithdrawDto dto) {
+    void withdraw(@RequestBody @Valid AccountWithdrawDto dto) {
         accountService.accountWithdrawal(dto.amount, dto.accountIdFrom);
     }
 
-    record TransferDto(Long accountIdFrom, Long accountIdTo,  @Positive double amount) {}
+    private record AccountTransferDto(Long accountIdFrom, Long accountIdTo,  @Positive double amount) {}
     @Operation(summary = "Transfer money between two accounts",
             description = "Both accounts must be in this bank.")
     @ApiResponses(value = {
@@ -161,7 +161,7 @@ public class AccountController {
                 content = { @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDto.class)) })
     })
     @PutMapping("/transfer")
-    void transfer(@RequestBody TransferDto dto) {
+    void transfer(@RequestBody AccountTransferDto dto) {
         accountService.accountTransfer(dto.amount, dto.accountIdFrom, dto.accountIdTo);
     }
 }
