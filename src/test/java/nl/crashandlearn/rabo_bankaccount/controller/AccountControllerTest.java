@@ -168,7 +168,7 @@ public class AccountControllerTest {
     public void testTransfer() throws Exception {
         // when
         MockHttpServletResponse response = mvc.perform(
-                        put("/account/withdraw")
+                        put("/account/transfer")
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content("""
                                         {
