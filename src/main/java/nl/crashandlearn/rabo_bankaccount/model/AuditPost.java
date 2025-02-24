@@ -20,7 +20,7 @@ public class AuditPost implements Serializable {
     @Schema(example = "1")
     private Long id;
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne
     @JoinColumn(name="user_id", updatable = false)
     @EqualsAndHashCode.Exclude
     User createdBy;

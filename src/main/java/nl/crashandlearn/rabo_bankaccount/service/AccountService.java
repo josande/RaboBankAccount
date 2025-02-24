@@ -29,9 +29,14 @@ public class AccountService extends BaseService {
         return repository.findById(id);
     }
 
-    public Account createAccount(Account account) {
-        account.setUser(User.builder().id(getUserId()).build());
-        return repository.save(account);
+    public Account createAccount(Double balance) {
+
+        var account = Account.builder()
+                .user(User.builder().id(getUserId()).build())
+                .balance(balance)
+                .build();
+        account = repository.save(account);
+        return repository.findById(account.getId()).get();
     }
 
     public void delete(Long id) {

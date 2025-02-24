@@ -8,7 +8,6 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.PositiveOrZero;
-import nl.crashandlearn.rabo_bankaccount.constraint.IbanFormat;
 import nl.crashandlearn.rabo_bankaccount.exception.ErrorDto;
 import nl.crashandlearn.rabo_bankaccount.model.Account;
 import nl.crashandlearn.rabo_bankaccount.service.AccountService;
@@ -93,7 +92,6 @@ public class AccountController {
     }
 
     public record NewAccountDto(
-            @Schema(example = IbanFormat.IBAN_EXAMPLE) @IbanFormat String iban,
             @Schema(description = "Current account balance in €", example = "100.00") @PositiveOrZero double balance) {}
 
     @Operation(summary = "Create a new account")
@@ -109,11 +107,7 @@ public class AccountController {
     ResponseEntity<?> createAccount(@RequestBody @Valid NewAccountDto account) {
 
         EntityModel<Account> entityModel = accountAssembler.toModel(
-                accountService.createAccount(
-                    Account.builder()
-                        .iban(account.iban)
-                        .balance(account.balance)
-                        .build()));
+                accountService.createAccount(account.balance));
 
         return ResponseEntity
                 .created(entityModel.getRequiredLink(IanaLinkRelations.SELF).toUri())
@@ -134,32 +128,11 @@ public class AccountController {
         accountService.delete(id);
     }
 
-    @Operation(summary = "Updates an account",
-            description = "Updates the account with given ID if found.")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Account updated ",
-                    content = { @Content(mediaType = "application/json",
-                            schema = @Schema(implementation = Account.class)) }),
-            @ApiResponse(responseCode = "400", description = "Bad request",
-                    content = { @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDto.class)) }),
-            @ApiResponse(responseCode = "401", description = "User is not allowed to update this account",
-                    content = { @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDto.class)) }),
-            @ApiResponse(responseCode = "404", description = "Account not found",
-                    content = { @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDto.class)) }) })
-    @PutMapping("/{id}")
-    EntityModel<Account> updateAccount(@RequestBody Account account) {
-        Account updatedAccount = accountService.update(account);
-        return accountAssembler.toModel(updatedAccount);
-    }
-
-
-
     record WithdrawDto(Long accountIdFrom, @Positive double amount) {}
     @Operation(summary = "Withdraw money from an account",
             description = "Account must hold sufficient funds.")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Transfer complete",
-                    content = { @Content(mediaType = "application/json", schema = @Schema(implementation = Account.class)) }),
+            @ApiResponse(responseCode = "200", description = "Transfer complete", content = { @Content }),
             @ApiResponse(responseCode = "400", description = "Bad Request",
                     content = { @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDto.class)) }),
             @ApiResponse(responseCode = "401", description = "User is not perform this transfer",
@@ -178,8 +151,7 @@ public class AccountController {
     @Operation(summary = "Transfer money between two accounts",
             description = "Both accounts must be in this bank.")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Transfer complete",
-                content = { @Content(mediaType = "application/json", schema = @Schema(implementation = Account.class)) }),
+            @ApiResponse(responseCode = "200", description = "Transfer complete", content = { @Content }),
             @ApiResponse(responseCode = "400", description = "Bad Request",
                     content = { @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDto.class)) }),
             @ApiResponse(responseCode = "401", description = "User is not perform this transfer",

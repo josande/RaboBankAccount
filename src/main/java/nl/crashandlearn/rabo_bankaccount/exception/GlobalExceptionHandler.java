@@ -39,13 +39,17 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(errorObject, HttpStatus.FORBIDDEN);
     }
 
-   @ExceptionHandler(SameAccountException.class)
+    @ExceptionHandler(SameAccountException.class)
     public ResponseEntity<ErrorDto> handleSameAccountException(SameAccountException ex, WebRequest request) {
         ErrorDto errorObject = new ErrorDto(HttpStatus.BAD_REQUEST, ex.getMessage(), new Date());
         return new ResponseEntity<>(errorObject, HttpStatus.BAD_REQUEST);
     }
 
-
+    @ExceptionHandler(CardNotFoundException.class)
+    public ResponseEntity<ErrorDto> handleCardNotFoundException(CardNotFoundException ex, WebRequest request) {
+        ErrorDto errorObject = new ErrorDto(HttpStatus.NOT_FOUND, ex.getMessage(), new Date());
+        return new ResponseEntity<>(errorObject, HttpStatus.NOT_FOUND);
+    }
 
 
 

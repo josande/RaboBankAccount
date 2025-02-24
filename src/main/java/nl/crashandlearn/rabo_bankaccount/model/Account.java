@@ -1,12 +1,10 @@
 package nl.crashandlearn.rabo_bankaccount.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.PositiveOrZero;
 import lombok.*;
-import nl.crashandlearn.rabo_bankaccount.constraint.IbanFormat;
 
 import java.io.Serializable;
 
@@ -23,13 +21,7 @@ public class Account implements Serializable {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name="user_id", updatable = false)
-    @EqualsAndHashCode.Exclude
     private User user;
-
-    @IbanFormat
-    @Schema(example = IbanFormat.IBAN_EXAMPLE)
-    private String iban;
 
     @PositiveOrZero
     @Schema(description = "Current account balance in €, must be at least 0. Default value is 0",

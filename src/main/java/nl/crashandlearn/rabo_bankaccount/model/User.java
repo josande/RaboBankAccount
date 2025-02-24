@@ -1,5 +1,6 @@
 package nl.crashandlearn.rabo_bankaccount.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.swagger.v3.oas.annotations.Hidden;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.Entity;
@@ -11,6 +12,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.http.HttpStatus;
 
 import java.io.Serializable;
 import java.util.Set;
@@ -22,6 +24,8 @@ import java.util.Set;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
+@Schema(hidden = true)
+
 public class User implements Serializable {
 
     @Id
@@ -31,7 +35,7 @@ public class User implements Serializable {
 
     private String username;
 
-    @Hidden
+    @JsonIgnore
     private String password;
 
     private Role role;
@@ -46,8 +50,7 @@ public class User implements Serializable {
     @Email
     String email;
 
-    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
-    @JoinColumn(name = "customer_id")
+    @OneToMany(mappedBy = "user", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<Account> accounts;
 
 }
