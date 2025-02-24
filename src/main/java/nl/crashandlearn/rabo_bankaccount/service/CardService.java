@@ -11,20 +11,22 @@ import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 
 @Service
-public class CardService  extends BaseService {
+public class CardService {
 
     private final CardRepository cardRepository;
     private final AccountRepository accountRepository;
+    private final AuthenticationHelperService authHelper;
 
-    public CardService(CardRepository cardRepository, AccountRepository accountRepository) {
+    public CardService(CardRepository cardRepository, AccountRepository accountRepository, AuthenticationHelperService authHelper) {
         this.cardRepository = cardRepository;
         this.accountRepository = accountRepository;
+        this.authHelper = authHelper;
     }
 
     public void createCard(Long accountId, CardType cardType) {
         Account account = accountRepository.findById(accountId).orElseThrow(() -> new AccountNotFoundException(accountId));
 
-        if (!isOwner(account) && !isAdmin())
+        if (!authHelper.isOwner(account) && !authHelper.isAdmin())
             throw new AccessDeniedException("User lacks permission to create card for account: "+accountId);
 
         if(account.getCards() != null && !account.getCards().isEmpty() )
@@ -37,7 +39,7 @@ public class CardService  extends BaseService {
     public void removeCard(Long cardId) {
         Card card = cardRepository.findById(cardId).orElseThrow(() -> new CardNotFoundException(cardId));
 
-        if (!isOwner(card.getAccount()) && !isAdmin())
+        if (!authHelper.isOwner(card.getAccount()) && !authHelper.isAdmin())
             throw new AccessDeniedException("User lacks permission to remove card with id: "+cardId);
 
         cardRepository.delete(card);
@@ -48,9 +50,9 @@ public class CardService  extends BaseService {
         var card = cardRepository.findById(cardIdFrom).orElseThrow(() -> new CardNotFoundException(cardIdFrom));
         var account = card.getAccount();
         if(account.getBalance() < amountToWithdraw * card.getCartType().getFee())
-            throw new InsufficientFundsException(account.getId(), account.getBalance(), amountToWithdraw);
+            throw new InsufficientFundsException(account.getId(), account.getBalance(), amountToWithdraw * card.getCartType().getFee());
 
-        if (!isOwner(card.getAccount()) && !isAdmin())
+        if (!authHelper.isOwner(card.getAccount()) && !authHelper.isAdmin())
             throw new AccessDeniedException("User lacks permission to withdraw from card: "+cardIdFrom);
 
         account.setBalance(account.getBalance() - amountToWithdraw * card.getCartType().getFee());
@@ -67,10 +69,10 @@ public class CardService  extends BaseService {
             throw new SameAccountException(accountFrom.getId());
 
         if(accountFrom.getBalance() < amount * card.getCartType().getFee())
-            throw new InsufficientFundsException(accountFrom.getId(), accountFrom.getBalance(), amount);
+            throw new InsufficientFundsException(accountFrom.getId(), accountFrom.getBalance(), amount * card.getCartType().getFee());
 
-        if (!isOwner(accountFrom) && !isAdmin())
-            throw new AccessDeniedException("User lacks permission to transfer from account: "+accountFrom);
+        if (!authHelper.isOwner(accountFrom) && !authHelper.isAdmin())
+            throw new AccessDeniedException("User lacks permission to transfer from account: "+accountFrom.getId());
 
         accountFrom.setBalance(accountFrom.getBalance() - amount * card.getCartType().getFee());
         accountTo.setBalance(accountTo.getBalance() + amount);

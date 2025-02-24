@@ -10,19 +10,21 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
-public class AuditService extends BaseService{
+public class AuditService {
 
     private final AuditRepository auditRepository;
     private final UserRepository userRepository;
+    private final AuthenticationHelperService authHelper;
 
-    public AuditService(AuditRepository auditRepository, UserRepository userRepository) {
+    public AuditService(AuditRepository auditRepository, UserRepository userRepository, AuthenticationHelperService authHelper) {
         super();
         this.auditRepository = auditRepository;
         this.userRepository = userRepository;
+        this.authHelper = authHelper;
     }
 
     public void logRecord(String operation, String parameters, String result) {
-        User createdBy = User.builder().id(getUserId()).build();
+        User createdBy = User.builder().id(authHelper.getUserId()).build();
 
         AuditPost auditPost = AuditPost.builder()
                 .createdBy(createdBy)

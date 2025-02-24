@@ -40,7 +40,6 @@ public class UserController {
                     content = { @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDto.class)) }),
             @ApiResponse(responseCode = "404", description = "User not found",
                     content = { @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDto.class)) })
-
     })
     @PreAuthorize("hasRole('ROLE_USER')")
     @GetMapping("")
@@ -64,8 +63,6 @@ public class UserController {
     public ResponseEntity<Double> getCurrentUserBalance() {
         return ResponseEntity.ok(userService.getBalance());
     }
-
-
 
     @Operation(summary = "Retrieves details for a specific users",
             description = "This method require the Admin role")

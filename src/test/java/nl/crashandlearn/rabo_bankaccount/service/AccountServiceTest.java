@@ -8,16 +8,10 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
 import org.mockito.ArgumentMatchers;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.security.access.AccessDeniedException;
-import org.springframework.security.test.context.support.WithMockUser;
-import org.springframework.security.test.context.support.WithUserDetails;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.util.Optional;
 
@@ -64,9 +58,7 @@ class AccountServiceTest {
         AccountService service = new AccountService(repository, authHelper);
         when(repository.findById(1L)).thenReturn(Optional.empty());
 
-        Exception exception = assertThrows(AccountNotFoundException.class, () -> {
-            service.accountWithdrawal(100.0d, 1L);
-        });
+        Exception exception = assertThrows(AccountNotFoundException.class, () -> service.accountWithdrawal(100.0d, 1L));
         assertEquals("Could not find Account with id: 1", exception.getMessage());
     }
     @Test
@@ -75,9 +67,7 @@ class AccountServiceTest {
         Account account = Account.builder().balance(10.0d).build();
         when(repository.findById(1L)).thenReturn(Optional.of(account));
 
-        Exception exception = assertThrows(InsufficientFundsException.class, () -> {
-            service.accountWithdrawal(100.0d, 1L);
-        });
+        Exception exception = assertThrows(InsufficientFundsException.class, () -> service.accountWithdrawal(100.0d, 1L));
         assertEquals("Insufficient balance on account: 1 Balance: 10.0 amount: 100.0", exception.getMessage());
     }
 
@@ -89,9 +79,7 @@ class AccountServiceTest {
         when(authHelper.isAdmin()).thenReturn(false);
         when(authHelper.isOwner(any(Account.class))).thenReturn(false);
 
-        Exception exception = assertThrows(AccessDeniedException.class, () -> {
-            service.accountWithdrawal(100.0d, 1L);
-        });
+        Exception exception = assertThrows(AccessDeniedException.class, () -> service.accountWithdrawal(100.0d, 1L));
         assertEquals("User lacks permission to withdraw from account: 1", exception.getMessage());
     }
 
@@ -127,9 +115,7 @@ class AccountServiceTest {
         AccountService service = new AccountService(repository, authHelper);
         when(repository.findById(1L)).thenReturn(Optional.empty());
 
-        Exception exception = assertThrows(AccountNotFoundException.class, () -> {
-            service.accountTransfer(100.0d, 1L, 2L);
-        });
+        Exception exception = assertThrows(AccountNotFoundException.class, () -> service.accountTransfer(100.0d, 1L, 2L));
         assertEquals("Could not find Account with id: 1", exception.getMessage());
     }
     @Test
@@ -139,9 +125,7 @@ class AccountServiceTest {
         when(repository.findById(1L)).thenReturn(Optional.of(account));
         when(repository.findById(2L)).thenReturn(Optional.empty());
 
-        Exception exception = assertThrows(AccountNotFoundException.class, () -> {
-            service.accountTransfer(100.0d, 1L, 2L);
-        });
+        Exception exception = assertThrows(AccountNotFoundException.class, () -> service.accountTransfer(100.0d, 1L, 2L));
         assertEquals("Could not find Account with id: 2", exception.getMessage());
     }
     @Test
@@ -152,9 +136,7 @@ class AccountServiceTest {
         when(repository.findById(1L)).thenReturn(Optional.of(accountFrom));
         when(repository.findById(2L)).thenReturn(Optional.of(accountTo));
 
-        Exception exception = assertThrows(InsufficientFundsException.class, () -> {
-            service.accountTransfer(100.0d, 1L, 2L);
-        });
+        Exception exception = assertThrows(InsufficientFundsException.class, () -> service.accountTransfer(100.0d, 1L, 2L));
         assertEquals("Insufficient balance on account: 1 Balance: 10.0 amount: 100.0", exception.getMessage());
     }
 
@@ -168,9 +150,7 @@ class AccountServiceTest {
         when(authHelper.isAdmin()).thenReturn(false);
         when(authHelper.isOwner(any(Account.class))).thenReturn(false);
 
-        Exception exception = assertThrows(AccessDeniedException.class, () -> {
-            service.accountTransfer(100.0d, 1L, 2L);
-        });
+        Exception exception = assertThrows(AccessDeniedException.class, () -> service.accountTransfer(100.0d, 1L, 2L));
         assertEquals("User lacks permission to transfer from account: 1", exception.getMessage());
     }
 

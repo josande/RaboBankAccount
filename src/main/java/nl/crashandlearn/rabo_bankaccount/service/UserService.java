@@ -9,19 +9,21 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-public class UserService extends BaseService {
+public class UserService {
     private final UserRepository repository;
+    private final AuthenticationHelperService authHelper;
 
-    public UserService(UserRepository repository) {
+    public UserService(UserRepository repository, AuthenticationHelperService authHelper) {
         this.repository = repository;
+        this.authHelper = authHelper;
     }
 
     public User getCurrentUser() {
-        return repository.findById(getUserId()).orElseThrow(() -> new UserNotFoundException(getUserId()));
+        return repository.findById(authHelper.getUserId()).orElseThrow(() -> new UserNotFoundException(authHelper.getUserId()));
     }
 
     public double getBalance() {
-        Double balance = repository.getBalance(getUserId());
+        Double balance = repository.getBalance(authHelper.getUserId());
         return balance == null ? 0 : balance;
     }
 

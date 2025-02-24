@@ -1,6 +1,5 @@
 package nl.crashandlearn.rabo_bankaccount.controller;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import nl.crashandlearn.rabo_bankaccount.exception.GlobalExceptionHandler;
 import nl.crashandlearn.rabo_bankaccount.model.Account;
 import nl.crashandlearn.rabo_bankaccount.service.AccountService;
@@ -9,9 +8,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.boot.test.json.JacksonTester;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpServletResponse;
@@ -23,7 +20,6 @@ import java.util.ArrayList;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 
@@ -32,11 +28,6 @@ public class AccountControllerTest {
 
     @Mock
     private AccountService service;
-    @Spy
-    private AccountAssembler assembler;
-
-
-    private JacksonTester<Account> jsonAccount;
 
     @InjectMocks
     private AccountController controller;
@@ -126,7 +117,10 @@ public class AccountControllerTest {
         MockHttpServletResponse response = mvc.perform(
                         post("/account/")
                                 .contentType(MediaType.APPLICATION_JSON)
-                                .content("{\n" + "  \"balance\": 100\n" + "}")
+                                .content("""
+                                        {
+                                          "balance": 100
+                                        }""")
                                 .accept(MediaType.APPLICATION_JSON))
                 .andReturn().getResponse();
 
@@ -139,7 +133,7 @@ public class AccountControllerTest {
 
         // when
         MockHttpServletResponse response = mvc.perform(
-                        delete("account/1/")
+                        delete("/account/1/")
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .accept(MediaType.APPLICATION_JSON))
                 .andReturn().getResponse();
@@ -155,7 +149,11 @@ public class AccountControllerTest {
         MockHttpServletResponse response = mvc.perform(
                         put("/account/withdraw")
                                 .contentType(MediaType.APPLICATION_JSON)
-                                .content("{\n" + "  \"cardIdFrom\": 1,\n" + "  \"amount\": 10\n" + "}" + "}")
+                                .content("""
+                                        {
+                                          "cardIdFrom": 1,
+                                          "amount": 10
+                                        }""")
                                 .accept(MediaType.APPLICATION_JSON))
                 .andReturn().getResponse();
 
@@ -169,7 +167,12 @@ public class AccountControllerTest {
         MockHttpServletResponse response = mvc.perform(
                         put("/account/withdraw")
                                 .contentType(MediaType.APPLICATION_JSON)
-                                .content("{\n" + "  \"cardIdFrom\": 0,\n" + "  \"accountIdTo\": 0,\n" + "  \"amount\": 0\n" + "}")
+                                .content("""
+                                        {
+                                          "cardIdFrom": 1,
+                                          "accountIdTo": 2,
+                                          "amount": 10
+                                        }""")
                                 .accept(MediaType.APPLICATION_JSON))
                 .andReturn().getResponse();
 
