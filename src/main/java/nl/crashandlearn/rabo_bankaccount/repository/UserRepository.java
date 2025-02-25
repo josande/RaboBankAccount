@@ -12,6 +12,6 @@ public interface UserRepository extends JpaRepository<User, Long> {
     Optional<User> findByUsername(String username);
     Boolean existsByUsername(String username);
 
-    @Query(value = "SELECT SUM(balance) FROM Account WHERE user.id = ?1")
+    @Query(value = "SELECT SUM(a.balance) FROM Account a WHERE a.user.id = ?1")
     Double getBalance(Long user_id);
 }

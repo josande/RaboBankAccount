@@ -28,8 +28,7 @@ public class Account implements Serializable {
     private User user;
 
     @PositiveOrZero
-    @Schema(description = "Current account balance in €, must be at least 0. Default value is 0",
-            example = "123.01")
+    @Schema(description = "Current account balance in €, must be at least 0. Default value is 0", example = "123.01")
     private double balance;
 
     @OneToMany(

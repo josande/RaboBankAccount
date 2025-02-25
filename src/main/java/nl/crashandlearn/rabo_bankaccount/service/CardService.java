@@ -23,7 +23,7 @@ public class CardService {
         this.authHelper = authHelper;
     }
 
-    public void createCard(Long accountId, CardType cardType) {
+    public Card createCard(Long accountId, CardType cardType) {
         Account account = accountRepository.findById(accountId).orElseThrow(() -> new AccountNotFoundException(accountId));
 
         if (!authHelper.isOwner(account) && !authHelper.isAdmin())
@@ -33,7 +33,7 @@ public class CardService {
             throw new CardAlreadyPresentException(accountId);
 
         Card card = Card.builder().account(account).cartType(cardType).build();
-        cardRepository.save(card);
+        return cardRepository.save(card);
     }
 
     public void removeCard(Long cardId) {

@@ -81,7 +81,7 @@ public class AuthController {
         return new ResponseEntity<>(new AuthResponse(accessToken), HttpStatus.OK);
     }
 
-    private record RegisterUserDto(
+    public record RegisterUserDto(
             @NotBlank
             @Schema(description = "Username to log in with", example = "username")
             String username,

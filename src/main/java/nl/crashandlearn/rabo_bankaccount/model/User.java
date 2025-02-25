@@ -48,8 +48,7 @@ public class User implements Serializable {
     @OneToMany(
             mappedBy = "user",
             fetch = FetchType.EAGER,
-            cascade = CascadeType.ALL,
-            orphanRemoval = true)
+            cascade = CascadeType.ALL)
     private Set<Account> accounts = new HashSet<>();
 
     @Override

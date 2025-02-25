@@ -25,7 +25,7 @@ public class CardController implements Serializable  {
         this.cardService = cardService;
     }
 
-    record NewCardDto(@Positive @Schema(example = "1")
+    public record NewCardDto(@Positive @Schema(example = "1")
                       Long accountId,
                       @Schema(description = "DEBIT_CARD or CREDIT_CARD", example = "DEBIT_CARD")
                       CardType cardType) {}
@@ -62,7 +62,7 @@ public class CardController implements Serializable  {
     }
 
 
-    private record CardWithdrawDto(Long cardIdFrom, @Positive double amount) {}
+    public record CardWithdrawDto(Long cardIdFrom, @Positive double amount) {}
     @Operation(summary = "Withdraw money via a card",
             description = "Account must hold sufficient funds.")
     @ApiResponses(value = {
@@ -81,7 +81,7 @@ public class CardController implements Serializable  {
         cardService.cardWithdrawal(dto.amount, dto.cardIdFrom);
     }
 
-    private record CardTransferDto(Long cardIdFrom, Long accountIdTo, @Positive double amount) {}
+    public record CardTransferDto(Long cardIdFrom, Long accountIdTo, @Positive double amount) {}
     @Operation(summary = "Transfer money between two accounts",
             description = "Both accounts must be in this bank.")
     @ApiResponses(value = {
