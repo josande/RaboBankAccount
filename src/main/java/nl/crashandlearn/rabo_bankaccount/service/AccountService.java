@@ -7,6 +7,7 @@ import nl.crashandlearn.rabo_bankaccount.exception.SameAccountException;
 import nl.crashandlearn.rabo_bankaccount.model.Account;
 import nl.crashandlearn.rabo_bankaccount.model.User;
 import nl.crashandlearn.rabo_bankaccount.repository.AccountRepository;
+import nl.crashandlearn.rabo_bankaccount.repository.CardRepository;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,10 +20,12 @@ public class AccountService{
 
     private final AccountRepository repository;
     private final AuthenticationHelperService authHelper;
+    private final CardRepository cardRepository;
 
-    public AccountService(AccountRepository repository, AuthenticationHelperService authHelper) {
+    public AccountService(AccountRepository repository, AuthenticationHelperService authHelper, CardRepository cardRepository) {
         this.repository = repository;
         this.authHelper = authHelper;
+        this.cardRepository = cardRepository;
     }
 
     public Optional<Account> findById(long id) {
@@ -39,11 +42,17 @@ public class AccountService{
         return repository.save(account);
     }
 
+    @Transactional
     public void delete(Long id) {
         var account = repository.findById(id).orElse(null);
         if(account == null) return;
 
-        if (authHelper.isOwner(account) || authHelper.isAdmin()) repository.deleteById(id);
+        if (authHelper.isOwner(account) || authHelper.isAdmin()) {
+            if(account.getCards() != null) {
+                cardRepository.deleteAll(account.getCards());
+            }
+            repository.deleteById(id);
+        }
         else throw new AccessDeniedException("User lacks permission to delete account: "+id);
     }
 

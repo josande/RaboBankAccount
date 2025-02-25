@@ -103,7 +103,7 @@ public class AccountController {
     })
     @PreAuthorize("hasRole('ROLE_USER')")
     @PostMapping("")
-    ResponseEntity<?> createAccount(@RequestBody @Valid NewAccountDto account) {
+    ResponseEntity<EntityModel<Account>> createAccount(@RequestBody @Valid NewAccountDto account) {
 
         EntityModel<Account> entityModel = accountAssembler.toModel(
                 accountService.createAccount(account.balance));

@@ -1,6 +1,8 @@
 package nl.crashandlearn.rabo_bankaccount.controller;
 
 import jakarta.annotation.Resource;
+import nl.crashandlearn.rabo_bankaccount.exception.AccountNotFoundException;
+import nl.crashandlearn.rabo_bankaccount.exception.InsufficientFundsException;
 import nl.crashandlearn.rabo_bankaccount.model.*;
 import nl.crashandlearn.rabo_bankaccount.repository.UserRepository;
 import nl.crashandlearn.rabo_bankaccount.service.AccountService;
@@ -27,16 +29,8 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 @ExtendWith(MockitoExtension.class)
 class AuditTests {
 
-
-    @Resource
-    UserController userController;
-    @Resource
-    AccountController accountController;
     @Resource
     AuditController auditController;
-
-    @Autowired
-    private UserRepository userRepository;
 
     User user = User.builder().username("user").password("pass").build();
     User admin = User.builder().username("admin").password("pass").build();
@@ -81,6 +75,27 @@ class AuditTests {
         Account a2 = accountService.createAccount(75.0d);
         accountService.accountTransfer(50, a1.getId(), a2.getId());
         accountService.accountWithdrawal(25, a2.getId());
+
+        setCurrentUser(admin);
+
+        var posts = auditController.getAllPosts();
+
+        assertEquals(2, posts.getContent().size());
+    }
+
+    @Test
+    public void test_NonSuccessfulAttempsAreLogged() {
+        setCurrentUser(user);
+
+        Account a1 = accountService.createAccount(50.0d);
+        Account a2 = accountService.createAccount(75.0d);
+
+
+        assertThrows(InsufficientFundsException.class,
+                () -> accountService.accountTransfer(500, a1.getId(), a2.getId()));
+
+        assertThrows(AccountNotFoundException.class,
+                () -> accountService.accountTransfer(50, a1.getId(), 999L));
 
         setCurrentUser(admin);
 

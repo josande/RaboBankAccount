@@ -37,10 +37,6 @@ public class UserDetail implements UserDetails {
         return id;
     }
 
-    public static long getSerialversionuid() {
-        return serialVersionUID;
-    }
-
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return authorities;

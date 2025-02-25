@@ -34,8 +34,7 @@ public class Account implements Serializable {
     @OneToMany(
             mappedBy = "account",
             cascade = CascadeType.ALL,
-            fetch = FetchType.EAGER,
-            orphanRemoval = true)
+            fetch = FetchType.EAGER)
     private Set<Card> cards = new HashSet<>();
 
     @Override
