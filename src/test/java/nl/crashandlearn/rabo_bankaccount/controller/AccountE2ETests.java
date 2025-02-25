@@ -4,7 +4,6 @@ import jakarta.annotation.Resource;
 import nl.crashandlearn.rabo_bankaccount.model.Account;
 import nl.crashandlearn.rabo_bankaccount.model.CardType;
 import nl.crashandlearn.rabo_bankaccount.model.User;
-import nl.crashandlearn.rabo_bankaccount.repository.UserRepository;
 import nl.crashandlearn.rabo_bankaccount.service.AccountService;
 import nl.crashandlearn.rabo_bankaccount.service.UserService;
 import org.junit.jupiter.api.BeforeEach;
@@ -60,8 +59,8 @@ class AccountE2ETests {
     public void test_getBalanceForCurrentUser() {
         setCurrentUser(user);
 
-        Account a1 = accountService.createAccount(100.0d);
-        Account a2 = accountService.createAccount(75.0d);
+        accountService.createAccount(100.0d);
+        accountService.createAccount(75.0d);
 
         var response = userController.getCurrentUserBalance();
         assertEquals(HttpStatus.OK, response.getStatusCode());

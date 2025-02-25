@@ -48,7 +48,7 @@ public class AuthController {
         this.authService = authService;
     }
 
-    private record LoginDto(
+    public record LoginDto(
             @NotBlank
             @Schema(description = "Username to log in with", example = "username")
             String username,
@@ -56,7 +56,7 @@ public class AuthController {
             @Schema(description = "Your password.", example = "12345")
             String password) {}
 
-    private record AuthResponse(String accessToken) {}
+    public record AuthResponse(String accessToken) {}
 
     @Operation(summary = "Log in with username and password")
     @ApiResponses(value = {
