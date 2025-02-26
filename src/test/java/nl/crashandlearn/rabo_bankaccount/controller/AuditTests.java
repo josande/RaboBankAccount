@@ -4,7 +4,6 @@ import jakarta.annotation.Resource;
 import nl.crashandlearn.rabo_bankaccount.exception.AccountNotFoundException;
 import nl.crashandlearn.rabo_bankaccount.exception.InsufficientFundsException;
 import nl.crashandlearn.rabo_bankaccount.model.*;
-import nl.crashandlearn.rabo_bankaccount.repository.UserRepository;
 import nl.crashandlearn.rabo_bankaccount.service.AccountService;
 import nl.crashandlearn.rabo_bankaccount.service.CardService;
 import nl.crashandlearn.rabo_bankaccount.service.UserService;
@@ -84,7 +83,7 @@ class AuditTests {
     }
 
     @Test
-    public void test_NonSuccessfulAttempsAreLogged() {
+    public void test_NonSuccessfulAttemptsAreLogged() {
         setCurrentUser(user);
 
         Account a1 = accountService.createAccount(50.0d);
